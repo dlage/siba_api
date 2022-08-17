@@ -3,7 +3,7 @@
 require_relative 'config/property'
 require_relative 'config/property_set'
 
-module FantasticstayApi
+module SIBAApi
   class API
     # A base class for constructing api configuration
     class Config

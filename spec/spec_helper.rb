@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'dotenv/load'
-require 'fantasticstay_api'
+require 'siba_api'
 require 'webmock/rspec'
 # require 'vcr_setup'
 # require 'webmock_setup'
@@ -18,43 +18,43 @@ RSpec.configure do |config|
   end
 end
 
-def stub_get(path, endpoint = FantasticstayApi.endpoint.to_s)
+def stub_get(path, endpoint = SIBAApi.endpoint.to_s)
   stub_request(:get, endpoint + path)
 end
 
-def stub_post(path, endpoint = FantasticstayApi.endpoint.to_s)
+def stub_post(path, endpoint = SIBAApi.endpoint.to_s)
   stub_request(:post, endpoint + path)
 end
 
-def stub_patch(path, endpoint = FantasticstayApi.endpoint.to_s)
+def stub_patch(path, endpoint = SIBAApi.endpoint.to_s)
   stub_request(:patch, endpoint + path)
 end
 
-def stub_put(path, endpoint = FantasticstayApi.endpoint.to_s)
+def stub_put(path, endpoint = SIBAApi.endpoint.to_s)
   stub_request(:put, endpoint + path)
 end
 
-def stub_delete(path, endpoint = FantasticstayApi.endpoint.to_s)
+def stub_delete(path, endpoint = SIBAApi.endpoint.to_s)
   stub_request(:delete, endpoint + path)
 end
 
-def a_get(path, endpoint = FantasticstayApi.endpoint.to_s)
+def a_get(path, endpoint = SIBAApi.endpoint.to_s)
   a_request(:get, endpoint + path)
 end
 
-def a_post(path, endpoint = FantasticstayApi.endpoint.to_s)
+def a_post(path, endpoint = SIBAApi.endpoint.to_s)
   a_request(:post, endpoint + path)
 end
 
-def a_patch(path, endpoint = FantasticstayApi.endpoint.to_s)
+def a_patch(path, endpoint = SIBAApi.endpoint.to_s)
   a_request(:patch, endpoint + path)
 end
 
-def a_put(path, endpoint = FantasticstayApi.endpoint)
+def a_put(path, endpoint = SIBAApi.endpoint)
   a_request(:put, endpoint + path)
 end
 
-def a_delete(path, endpoint = FantasticstayApi.endpoint)
+def a_delete(path, endpoint = SIBAApi.endpoint)
   a_request(:delete, endpoint + path)
 end
 

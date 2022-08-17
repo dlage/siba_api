@@ -2,23 +2,23 @@
 
 require 'spec_helper'
 
-RSpec.describe FantasticstayApi do
+RSpec.describe SIBAApi do
   it 'has a version number' do
-    expect(FantasticstayApi::VERSION).not_to be nil
+    expect(SIBAApi::VERSION).not_to be nil
   end
 
-  describe 'FantasticstayApi::Client' do
+  describe 'SIBAApi::Client' do
     api_key = 'test_key'
     api_endpoint = 'https://api.fsapp.io'
-    let(:api_client) { FantasticstayApi.new({ token: api_key, endpoint: api_endpoint }) }
+    let(:api_client) { SIBAApi.new({ token: api_key, endpoint: api_endpoint }) }
     it 'is initialized with options' do
-      expect(api_client).to be_a(FantasticstayApi::Client)
+      expect(api_client).to be_a(SIBAApi::Client)
       expect(api_client.token).to equal(api_key)
       expect(api_client.endpoint).to equal(api_endpoint)
     end
-    let(:default_api_client) { FantasticstayApi.new({ token: api_key, endpoint: api_endpoint }) }
+    let(:default_api_client) { SIBAApi.new({ token: api_key, endpoint: api_endpoint }) }
     it 'defaults are initialized as well' do
-      expect(api_client).to be_a(FantasticstayApi::Client)
+      expect(api_client).to be_a(SIBAApi::Client)
       expect(api_client.token).not_to be_nil
       expect(api_client.endpoint).not_to be_nil
     end
@@ -33,7 +33,7 @@ RSpec.describe FantasticstayApi do
       stub_get(request_path).to_return(body: body, status: status)
     end
 
-    let(:listings_response) { FantasticstayApi::Client.new.listings }
+    let(:listings_response) { SIBAApi::Client.new.listings }
     it 'returns correctly some data', :vcr do
       expect(listings_response).to be_kind_of(Hash)
       expect(listings_response).to have_key(:total)
@@ -61,7 +61,7 @@ RSpec.describe FantasticstayApi do
       stub_get(request_path).to_return(body: body, status: status)
     end
 
-    let(:integrations_result) { FantasticstayApi::Client.new.integrations }
+    let(:integrations_result) { SIBAApi::Client.new.integrations }
     it 'returns integrations', :vcr do
       puts integrations_result
       expect(integrations_result).to have_key(:total)

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module FantasticstayApi
+module SIBAApi
   class API
     class Config
       # Property objects provide an interface for configuration options

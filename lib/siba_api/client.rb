@@ -4,7 +4,7 @@ require 'json'
 require 'logger'
 require_relative 'api'
 
-module FantasticstayApi
+module SIBAApi
   # Main client class that implements communication with the API
   # global_params:
   # - include_related_objects: int	0-1	0
@@ -13,23 +13,52 @@ module FantasticstayApi
   class Client < API
     def listings(global_params = {})
       response = request(
-        http_method: :get,
-        endpoint: 'listings',
+        operation: 'EntregaBoletinsAlojamento',
         params: global_params
       )
       process_response(response)
     end
 
-    # FantasticstayApi::Client.new.calendar(38859, '2022-01-01', '2022-07-31')
-    def calendar(listing_id, start_date = nil, end_date = nil, filters = {}, global_params = {})
+    # SIBAApi::Client.new.calendar(38859, '2022-01-01', '2022-07-31')
+    #          <sef:UnidadeHoteleira>?</sef:UnidadeHoteleira>
+    #          <sef:Estabelecimento>?</sef:Estabelecimento>
+    #          <!--Optional:-->
+    #          <sef:ChaveAcesso>?</sef:ChaveAcesso>
+    #          <!--Optional:-->
+    #          <sef:Boletins>?</sef:Boletins>
+    # Boletins:
+    # <sef:Apelido>Apelido</sef:Apelido>
+    # <sef:Nome>Teste</sef:Nome>
+    # <sef:Nacionalidade>DZA</sef:Nacionalidade>
+    # <sef:Data_Nascimento>2000-01-01</sef:Data_Nascimento>
+    # <sef:Local_Nascimento></sef:Local_Nascimento>
+    # <sef:Documento_Identificacao></sef:Documento_Identificacao>
+    # <sef:Pais_Emissor_Documento></sef:Pais_Emissor_Documento>
+    # <sef:Tipo_Documento></sef:Tipo_Documento>
+    # <sef:Pais_Residencia_Origem></sef:Pais_Residencia_Origem>
+    # <sef:Data_Entrada></sef:Data_Entrada>
+    # <sef:Data_Saida></sef:Data_Saida>
+    # <sef:Local_Residencia_Origem></sef:Local_Residencia_Origem>
+    #
+=begin
+    Apelido: 'Surname',
+    Nome: 'Name',
+    Nacionalidade: 'VEN',
+    Data_Nascimento: '19990101',
+    Local_Nascimento: 'Place of Birth',
+    Documento_Identificacao: '123456789',
+    Pais_Emissor_Documento: 'YEM',
+    Tipo_Documento: 'P',
+    Pais_Residencia_Origem: 'ZMB',
+    Data_Entrada: '20220801',
+    Data_Saida: '20220831',
+    Local_Residencia_Origem: 'Place of Residence',
+=end
+    def deliver_bulletins(bulletins = [], global_params = {})
       response = request(
-        http_method: :get,
-        endpoint: 'calendar',
+        operation: :entrega_boletins_alojamento,
         params: {
-          listing_id: listing_id,
-          start_date: start_date,
-          end_date: end_date,
-          filters: filters.to_json
+          Boletins: bulletins
         }.merge(global_params)
       )
       process_response(response)
@@ -44,7 +73,7 @@ module FantasticstayApi
       process_response(response)
     end
 
-    # FantasticstayApi::Client.new.reservations(38859)
+    # SIBAApi::Client.new.reservations(38859)
     def reservations(listing_id, filters = [], sort = nil, global_params = {})
       response = request(
         http_method: :get,

@@ -3,16 +3,16 @@
 require_relative 'api/config'
 require_relative 'version'
 
-module FantasticstayApi
+module SIBAApi
   # Stores the configuration
   class Configuration < API::Config
     property :follow_redirects, default: true
 
-    # The api endpoint used to connect to FantasticstayApi if none is set
+    # The api endpoint used to connect to SIBAApi if none is set
     property  :endpoint, default: 'https://api.fsapp.io/'
 
     # The value sent in the http header for 'User-Agent' if none is set
-    property  :user_agent, default: "FantasticstayApi API Ruby Gem #{FantasticstayApi::VERSION}"
+    property  :user_agent, default: "SIBAApi API Ruby Gem #{SIBAApi::VERSION}"
 
     # By default uses the Faraday connection options if none is set
     property  :connection_options, default: {}

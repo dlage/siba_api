@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module FantasticstayApi
+module SIBAApi
   # Constants
   module Constants
     # Response headers

@@ -4,22 +4,21 @@ require_relative 'api_exceptions'
 require_relative 'configuration'
 require_relative 'constants'
 require_relative 'http_status_codes'
-require 'api_cache'
 
-module FantasticstayApi
+module SIBAApi
   # Core class responsible for api interface operations
   class API
     include ApiExceptions
     include Constants
     include HttpStatusCodes
 
-    attr_reader(*FantasticstayApi.configuration.property_names, :token, :endpoint)
+    attr_reader(*SIBAApi.configuration.property_names, :wsdl, :hotel_unit, :access_key, :establishment)
 
     attr_accessor :current_options
 
     # Callback to update current configuration options
     class_eval do
-      FantasticstayApi.configuration.property_names.each do |key|
+      SIBAApi.configuration.property_names.each do |key|
         define_method "#{key}=" do |arg|
           instance_variable_set("@#{key}", arg)
           current_options.merge!({ "#{key}": arg })
@@ -27,7 +26,7 @@ module FantasticstayApi
       end
     end
 
-    API_ENDPOINT = 'https://api.fsapp.io'
+    API_WSDL = 'https://siba.sef.pt/bawsdev/boletinsalojamento.asmx?wsdl'
     HTTP_STATUS_MAPPING = {
       HTTP_BAD_REQUEST_CODE => BadRequestError,
       HTTP_UNAUTHORIZED_CODE => UnauthorizedError,
@@ -41,14 +40,13 @@ module FantasticstayApi
     #
     # @api public
     def initialize(options = {}, &block)
-      opts = FantasticstayApi.configuration.fetch.merge(options)
+      opts = SIBAApi.configuration.fetch.merge(options)
       @current_options = opts
 
-      FantasticstayApi.configuration.property_names.each do |key|
+      SIBAApi.configuration.property_names.each do |key|
         send("#{key}=", opts[key])
       end
-      @api_token = opts[:token] || ENV['FANTASTICSTAY_API_TOKEN']
-      @api_endpoint = opts[:endpoint] || ENV['FANTASTICSTAY_API_ENDPOINT'] || API_ENDPOINT
+      @wsdl = opts[:wsdl] || ENV['SIBA_API_WSDL'] || API_WSDL
 
       yield_or_eval(&block) if block_given?
     end
@@ -65,23 +63,25 @@ module FantasticstayApi
     private
 
     def client
-      # provide your own logger
-      logger = Logger.new $stderr
-      logger.level = Logger::DEBUG
-      @client ||= Faraday.new(@api_endpoint) do |client|
-        client.request :url_encoded
-        client.adapter Faraday.default_adapter
-        client.headers['Content-Type'] = 'application/json'
-        client.headers['x-api-key'] = @api_token
-        client.response :logger, logger
+      @client ||= Savon.client do |globals|
+        globals.wsdl @wsdl
+        globals.log true
+        globals.log_level :debug
+        globals.convert_request_keys_to :camelcase
       end
     end
 
-    def request(http_method:, endpoint:, params: {}, cache_ttl: 3600)
-      response = APICache.get(http_method.to_s + endpoint + params.to_s, cache: cache_ttl) do
-         client.public_send(http_method, endpoint, params)
-      end
-      parsed_response = Oj.load(response.body)
+    def request(operation:, params: {}, cache_ttl: 3600)
+      default_params = {
+        UnidadeHoteleira: @current_options[:hotel_unit],
+        Estabelecimento: @current_options[:establishment],
+        ChaveAcesso: @current_options[:access_key]
+      }
+      #response = APICache.get(operation.to_s + params.to_s, cache: cache_ttl) do
+      response = client.call(operation.to_sym, message: default_params.merge(params))
+      #end
+      return response
+      parsed_response = response.body
 
       return parsed_response if response_successful?(response)
 
@@ -97,7 +97,7 @@ module FantasticstayApi
     end
 
     def response_successful?(response)
-      response.status == HTTP_OK_CODE
+      response.successful? and (response.http.code == HTTP_OK_CODE)
     end
 
     # Responds to attribute query or attribute clear

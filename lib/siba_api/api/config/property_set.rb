@@ -2,7 +2,7 @@
 
 require 'set'
 
-module FantasticstayApi
+module SIBAApi
   class API
     class Config
       # Class responsible for storing configuration properties

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module FantasticstayApi
+module SIBAApi
   module ApiExceptions
     APIExceptionError = Class.new(StandardError)
     BadRequestError = Class.new(APIExceptionError)

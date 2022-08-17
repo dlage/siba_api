@@ -1,24 +1,24 @@
 # frozen_string_literal: true
 
-require_relative 'lib/fantasticstay_api/version'
+require_relative 'lib/siba_api/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = 'fantasticstay_api'
-  spec.version       = FantasticstayApi::VERSION
+  spec.name          = 'siba_api'
+  spec.version       = SIBAApi::VERSION
   spec.authors       = ['Dinis']
   spec.email         = ['dinis@lage.pw']
 
-  spec.summary       = 'FantasticStay API Wrapper.'
-  spec.description   = 'A gem that implements functions from the FS API available for its users.'
-  spec.homepage      = 'https://github.com/dlage/fantasticstay_api_gem'
+  spec.summary       = 'SEF SIBA API Wrapper for Local Accommodation Bulletin submission.'
+  spec.description   = 'A gem that implements functions from the SIBA API.'
+  spec.homepage      = 'https://github.com/dlage/siba_api'
   spec.license       = 'MIT'
   spec.required_ruby_version = Gem::Requirement.new('>= 2.4.0')
 
-  spec.metadata['allowed_push_host'] = "TODO: Set to 'http://mygemserver.com'"
+  spec.metadata['allowed_push_host'] = "https://rubygems.org"
 
   spec.metadata['homepage_uri'] = spec.homepage
-  spec.metadata['source_code_uri'] = 'https://github.com/dlage/fantasticstay_api_gem'
-  spec.metadata['changelog_uri'] = 'https://github.com/dlage/fantasticstay_api_gem/blob/master/CHANGELOG.md'
+  spec.metadata['source_code_uri'] = 'https://github.com/dlage/siba_api'
+  spec.metadata['changelog_uri'] = 'https://github.com/dlage/siba_api/blob/master/CHANGELOG.md'
 
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
@@ -30,10 +30,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   # Uncomment to register a new dependency of your gem
-  # spec.add_dependency "example-gem", "~> 1.0"
-  spec.add_dependency 'faraday', '~> 1.3.0'
-  spec.add_dependency 'oj', '~> 3.11'
-  spec.add_dependency 'api_cache', '~> 0.3.0'
+  spec.add_dependency 'savon', '~> 2.12'
 
   # spec.add_dependency 'dry-configurable', '~> 0.12.1'
 

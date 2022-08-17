@@ -1,34 +1,42 @@
 PATH
   remote: .
   specs:
-    fantasticstay_api (0.1.0)
-      api_cache (~> 0.3.0)
-      faraday (~> 1.3.0)
-      oj (~> 3.11)
+    siba_api (0.1.0)
+      savon (~> 2.12)
 
 GEM
   remote: https://rubygems.org/
   specs:
     addressable (2.7.0)
       public_suffix (>= 2.0.2, < 5.0)
-    api_cache (0.3.0)
+    akami (1.3.1)
+      gyoku (>= 0.4.0)
+      nokogiri
     ast (2.4.2)
+    builder (3.2.4)
     crack (0.4.5)
       rexml
     diff-lcs (1.4.4)
     dotenv (2.7.6)
-    faraday (1.3.0)
-      faraday-net_http (~> 1.0)
-      multipart-post (>= 1.2, < 3)
-      ruby2_keywords
-    faraday-net_http (1.0.1)
+    gyoku (1.4.0)
+      builder (>= 2.1.2)
+      rexml (~> 3.0)
     hashdiff (1.0.1)
-    multipart-post (2.1.1)
-    oj (3.11.3)
+    httpi (2.5.0)
+      rack
+      socksify
+    mail (2.7.1)
+      mini_mime (>= 0.1.1)
+    mini_mime (1.1.2)
+    nokogiri (1.13.8-aarch64-linux)
+      racc (~> 1.4)
+    nori (2.6.0)
     parallel (1.20.1)
     parser (3.0.0.0)
       ast (~> 2.4.1)
     public_suffix (4.0.6)
+    racc (1.6.0)
+    rack (2.2.4)
     rainbow (3.0.0)
     rake (13.0.3)
     regexp_parser (2.1.1)
@@ -58,9 +66,22 @@ GEM
     rubocop-ast (1.4.1)
       parser (>= 2.7.1.5)
     ruby-progressbar (1.11.0)
-    ruby2_keywords (0.0.4)
+    savon (2.13.0)
+      akami (~> 1.2)
+      builder (>= 2.1.2)
+      gyoku (~> 1.2)
+      httpi (>= 2.4.5)
+      mail (~> 2.5)
+      nokogiri (>= 1.8.1)
+      nori (~> 2.4)
+      wasabi (~> 3.4)
+    socksify (1.7.1)
     unicode-display_width (1.7.0)
     vcr (6.0.0)
+    wasabi (3.7.0)
+      addressable
+      httpi (~> 2.0)
+      nokogiri (>= 1.4.2)
     webmock (3.12.2)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
@@ -72,10 +93,10 @@ PLATFORMS
 
 DEPENDENCIES
   dotenv (~> 2.7)
-  fantasticstay_api!
   rake (~> 13.0)
   rspec (~> 3.0)
   rubocop (~> 0.80)
+  siba_api!
   vcr (~> 6.0)
   webmock (~> 3.12)
 

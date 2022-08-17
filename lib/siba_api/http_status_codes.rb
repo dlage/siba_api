@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module FantasticstayApi
+module SIBAApi
   module HttpStatusCodes
     HTTP_OK_CODE = 200
 

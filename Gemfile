@@ -2,7 +2,7 @@
 
 source 'https://rubygems.org'
 
-# Specify your gem's dependencies in fantasticstay_api.gemspec
+# Specify your gem's dependencies in siba_api.gemspec
 gemspec
 
 gem 'dotenv', '~> 2.7'

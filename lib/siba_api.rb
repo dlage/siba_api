@@ -1,14 +1,13 @@
 # frozen_string_literal: true
 
-require 'faraday'
-require 'oj'
-require_relative 'fantasticstay_api/version'
+require 'savon'
+require_relative 'siba_api/version'
 
-module FantasticstayApi
+module SIBAApi
   # Base module for Fantasticstay API
   class Error < StandardError; end
 
-  LIBNAME = 'fantasticstay_api'
+  LIBNAME = 'siba_api'
 
   LIBDIR = File.expand_path(LIBNAME.to_s, __dir__)
 
@@ -27,12 +26,12 @@ module FantasticstayApi
     # Configure options
     #
     # @example
-    #   FantasticstayApi.configure do |c|
+    #   SIBAApi.configure do |c|
     #     c.some_option = true
     #   end
     #
     # @yield the configuration block
-    # @yieldparam configuration [FantasticstayApi::Configuration]
+    # @yieldparam configuration [SIBAApi::Configuration]
     #   the configuration instance
     #
     # @return [nil]
@@ -42,12 +41,12 @@ module FantasticstayApi
       yield configuration
     end
 
-    # Alias for FantasticstayApi::Client.new
+    # Alias for SIBAApi::Client.new
     #
     # @param [Hash] options
     #   the configuration options
     #
-    # @return [FantasticstayApi::Client]
+    # @return [SEFApi::Client]
     #
     # @api public
     def new(options = {}, &block)
@@ -64,14 +63,14 @@ module FantasticstayApi
       Middleware.default(options)
     end
 
-    # Delegate to FantasticstayApi::Client
+    # Delegate to SIBAApi::Client
     #
     # @api private
     def method_missing(method_name, *args, &block)
       if new.respond_to?(method_name)
         new.send(method_name, *args, &block)
       elsif configuration.respond_to?(method_name)
-        FantasticstayApi.configuration.send(method_name, *args, &block)
+        SIBAApi.configuration.send(method_name, *args, &block)
       else
         super.respond_to_missing?
       end
@@ -85,5 +84,5 @@ module FantasticstayApi
   end
 end
 
-require_relative 'fantasticstay_api/client'
-require_relative 'fantasticstay_api/configuration'
+require_relative 'siba_api/client'
+require_relative 'siba_api/configuration'
