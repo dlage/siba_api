@@ -1,0 +1,114 @@
+{
+  "success": true,
+  "integrations": [
+    {
+      "nickname": "dinis.lage",
+      "picture": "https:\/\/a0.muscache.com\/im\/pictures\/user\/d86f8828-007a-420c-bdcc-cef4efa1a37b.jpg?aki_policy=profile_large",
+      "id": 6052,
+      "user": null,
+      "first_name": "Dinis",
+      "last_name": "Lage",
+      "full_name": "Dinis Lage"
+    },
+    {
+      "nickname": "Tasks",
+      "picture": null,
+      "id": 6057,
+      "user": "ilhadostempos@gmail.com",
+      "first_name": null,
+      "last_name": null,
+      "full_name": null
+    },
+    {
+      "nickname": "Stripe",
+      "picture": null,
+      "id": 6058,
+      "user": "acct_1HkTEJKjd5JMbnYS",
+      "first_name": null,
+      "last_name": null,
+      "full_name": "Stripe"
+    },
+    {
+      "nickname": "quietprince",
+      "picture": null,
+      "id": 6059,
+      "user": null,
+      "first_name": null,
+      "last_name": null,
+      "full_name": null
+    },
+    {
+      "nickname": "Automated Forms",
+      "picture": null,
+      "id": 6060,
+      "user": null,
+      "first_name": null,
+      "last_name": null,
+      "full_name": null
+    },
+    {
+      "nickname": "AutoMessages",
+      "picture": null,
+      "id": 6061,
+      "user": null,
+      "first_name": null,
+      "last_name": null,
+      "full_name": null
+    },
+    {
+      "nickname": "AutoEmailFetch",
+      "picture": null,
+      "id": 6062,
+      "user": null,
+      "first_name": null,
+      "last_name": null,
+      "full_name": null
+    },
+    {
+      "nickname": "AutoPayments",
+      "picture": null,
+      "id": 6063,
+      "user": null,
+      "first_name": null,
+      "last_name": null,
+      "full_name": null
+    },
+    {
+      "nickname": "AnsweringMachine",
+      "picture": null,
+      "id": 6064,
+      "user": null,
+      "first_name": null,
+      "last_name": null,
+      "full_name": null
+    },
+    {
+      "nickname": "B.com",
+      "picture": null,
+      "id": 6066,
+      "user": null,
+      "first_name": null,
+      "last_name": null,
+      "full_name": null
+    },
+    {
+      "nickname": "ExcelReservationsImport",
+      "picture": null,
+      "id": 6067,
+      "user": null,
+      "first_name": null,
+      "last_name": null,
+      "full_name": null
+    },
+    {
+      "nickname": "AutoReviews",
+      "picture": null,
+      "id": 6168,
+      "user": null,
+      "first_name": null,
+      "last_name": null,
+      "full_name": null
+    }
+  ],
+  "total": 12
+}
