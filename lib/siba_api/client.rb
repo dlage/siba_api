@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'json'
 require 'logger'
+require 'base64'
 require_relative 'api'
 
 module SIBAApi
@@ -41,80 +41,74 @@ module SIBAApi
     # <sef:Local_Residencia_Origem></sef:Local_Residencia_Origem>
     #
 =begin
-    Apelido: 'Surname',
-    Nome: 'Name',
-    Nacionalidade: 'VEN',
-    Data_Nascimento: '19990101',
-    Local_Nascimento: 'Place of Birth',
-    Documento_Identificacao: '123456789',
-    Pais_Emissor_Documento: 'YEM',
-    Tipo_Documento: 'P',
-    Pais_Residencia_Origem: 'ZMB',
-    Data_Entrada: '20220801',
-    Data_Saida: '20220831',
-    Local_Residencia_Origem: 'Place of Residence',
+    'Apelido' => 'Surname',
+    'Nome' => 'Name',
+    'Nacionalidade' => 'VEN',
+    'Data_Nascimento' => '19990101',
+    'Local_Nascimento' => 'Place of Birth',
+    'Documento_Identificacao' => '123456789',
+    'Pais_Emissor_Documento' => 'YEM',
+    'Tipo_Documento' => 'P',
+    'Pais_Residencia_Origem' => 'ZMB',
+    'Data_Entrada' => '20220801',
+    'Data_Saida' => '20220831',
+    'Local_Residencia_Origem' => 'Place of Residence',
 =end
     def deliver_bulletins(bulletins = [], global_params = {})
+      logger = Logger.new $stderr
+      logger.level = Logger::DEBUG
+      bulletins_xml = Gyoku.xml(
+        {
+          #'Unidade_Hoteleira' => build_hotel_unit,
+          'Boletim_Alojamento' => build_bulletins(bulletins)
+        },
+      )
+      logger.debug(bulletins_xml)
+      bulletins_encoded = Base64.encode64(bulletins_xml)
       response = request(
         operation: :entrega_boletins_alojamento,
         params: {
-          Boletins: bulletins
+          Boletins: bulletins_encoded
         }.merge(global_params)
       )
       process_response(response)
     end
 
-    def listing(listing_id, global_params = {})
-      response = request(
-        http_method: :get,
-        endpoint: sprintf('listings/%d', listing_id),
-        params: global_params
-      )
-      process_response(response)
-    end
-
-    # SIBAApi::Client.new.reservations(38859)
-    def reservations(listing_id, filters = [], sort = nil, global_params = {})
-      response = request(
-        http_method: :get,
-        endpoint: 'reservations',
-        params: {
-          listing_id: listing_id,
-          filters: filters.to_json,
-          sort: sort
-        }.merge!(global_params)
-      )
-      process_response(response)
-    end
-
-    def reservation(reservation_id, global_params = {})
-      response = request(
-        http_method: :get,
-        endpoint: sprintf('reservations/%d', reservation_id),
-        params: global_params
-      )
-      process_response(response)
-    end
-
-    def guest(guest_id, global_params = {})
-      response = request(
-        http_method: :get,
-        endpoint: sprintf('guests/%d', guest_id),
-        params: global_params
-      )
-      process_response(response)
-    end
-
-    def integrations(global_params = {})
-      response = request(
-        http_method: :get,
-        endpoint: 'integrations',
-        params: global_params
-      )
-      process_response(response)
-    end
-
     protected
+
+    def build_hotel_unit
+      hotel_unit = {
+        'Unidade_Hoteleira' => @current_options[:hotel_unit],
+        'Estabelecimento' => @current_options[:establishment],
+      }
+      hotel_unit
+    end
+
+    def build_bulletins(bulletins = [])
+      translation_hash = {
+        surname: 'Apelido',
+        name: 'Nome',
+        nationality: 'Nacionalidade',
+        birthdate: 'Data_Nascimento',
+        place_of_birth: 'Local_Nascimento',
+        id_document: 'Documento_Identificacao',
+        document_country: 'Pais_Emissor_Documento',
+        document_type: 'Tipo_Documento',
+        origin_country: 'Pais_Residencia_Origem',
+        start_date: 'Data_Entrada',
+        end_date: 'Data_Saida',
+        origin_place: 'Local_Residencia_Origem',
+      }
+      translated_bulletins = []
+      bulletins.each do |b|
+        bt = {}
+        translation_hash.keys.each do |k|
+          bt[translation_hash[k]] = b[k]
+        end
+        translated_bulletins.push(bt)
+      end
+      translated_bulletins
+    end
 
     def process_response(response)
       result = response
