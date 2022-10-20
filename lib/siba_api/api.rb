@@ -14,7 +14,7 @@ module SIBAApi
 
     attr_reader(*SIBAApi.configuration.property_names, :wsdl, :hotel_unit, :access_key, :establishment)
 
-    attr_accessor :current_options
+    attr_accessor :current_options, :last_response
 
     # Callback to update current configuration options
     class_eval do
@@ -71,26 +71,54 @@ module SIBAApi
       end
     end
 
-    def request(operation:, params: {}, cache_ttl: 3600)
+    def request(operation:, params: {})
       default_params = {
         UnidadeHoteleira: @current_options[:hotel_unit],
         Estabelecimento: @current_options[:establishment],
         ChaveAcesso: @current_options[:access_key]
       }
-      #response = APICache.get(operation.to_s + params.to_s, cache: cache_ttl) do
+
       response = client.call(operation.to_sym, message: default_params.merge(params))
-      #end
-      return response
-      parsed_response = response.body
+      self.last_response = response
 
-      return parsed_response if response_successful?(response)
+      if response_successful?(response)
+        result = response.body["#{operation}_response".to_sym]["#{operation}_result".to_sym]
+        if result == '0'
+          return true
+        end
+        parsed_response = parse_response(result)
+        raise error_class(response.http.code), "Code: #{parsed_response[:codigo_retorno]}, response: #{response.body}, description: #{parsed_response[:descricao]}"
+      end
 
-      raise error_class(response), "Code: #{response.status}, response: #{response.body}"
+      raise error_class(response.http.code), "Code: #{response.http.code}, response: #{response.body}"
     end
 
-    def error_class(response)
-      if HTTP_STATUS_MAPPING.include?(response.status)
-        HTTP_STATUS_MAPPING[response.status]
+=begin
+Error:
+{:erros_ba=>
+  {:retorno_ba=>
+    {:linha=>"0",
+     :codigo_retorno=>"75",
+     :descricao=>
+      "Linha XML 6. -->The element 'Unidade_Hoteleira' in namespace 'http://sef.pt/BAws' has incomplete content. List of possible elements expected: 'Abreviatura' in namespace 'http://sef.pt/BAws'."},
+   :@xmlns=>"http://www.sef.pt/BAws"}}
+
+Success:
+
+=end
+    def parse_response(result)
+      inner_response = Nori.new(:convert_tags_to => lambda { |tag| tag.snakecase.to_sym }).parse(
+        result
+      )
+      if inner_response[:erros_ba]
+        return inner_response[:erros_ba][:retorno_ba]
+      end
+      return inner_response
+    end
+
+    def error_class(error_code)
+      if HTTP_STATUS_MAPPING.include?(error_code)
+        HTTP_STATUS_MAPPING[error_code]
       else
         HTTP_STATUS_MAPPING['default']
       end

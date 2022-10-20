@@ -11,14 +11,6 @@ module SIBAApi
   # - page: int	positive	1
   # - per_page: int	positive	20
   class Client < API
-    def listings(global_params = {})
-      response = request(
-        operation: 'EntregaBoletinsAlojamento',
-        params: global_params
-      )
-      process_response(response)
-    end
-
     # SIBAApi::Client.new.calendar(38859, '2022-01-01', '2022-07-31')
     #          <sef:UnidadeHoteleira>?</sef:UnidadeHoteleira>
     #          <sef:Estabelecimento>?</sef:Estabelecimento>
@@ -54,14 +46,19 @@ module SIBAApi
     'Data_Saida' => '20220831',
     'Local_Residencia_Origem' => 'Place of Residence',
 =end
-    def deliver_bulletins(bulletins = [], global_params = {})
+    def deliver_bulletins(file_number, bulletins = [], global_params = {})
       logger = Logger.new $stderr
       logger.level = Logger::DEBUG
       bulletins_xml = Gyoku.xml(
         {
-          #'Unidade_Hoteleira' => build_hotel_unit,
-          'Boletim_Alojamento' => build_bulletins(bulletins)
+          'MovimentoBAL' => {
+            'Unidade_Hoteleira' => build_hotel_unit,
+            'Boletim_Alojamento' => build_bulletins(bulletins),
+            'Envio' => build_control_data(file_number),
+            :@xmlns => 'http://sef.pt/BAws'
+          },
         },
+        pretty_print: true
       )
       logger.debug(bulletins_xml)
       bulletins_encoded = Base64.encode64(bulletins_xml)
@@ -69,19 +66,57 @@ module SIBAApi
         operation: :entrega_boletins_alojamento,
         params: {
           Boletins: bulletins_encoded
-        }.merge(global_params)
+        }
       )
       process_response(response)
     end
 
     protected
 
+=begin
+  <Unidade_Hoteleira>
+    <Codigo_Unidade_Hoteleira>121212121</Codigo_Unidade_Hoteleira>
+    <Estabelecimento>00</Estabelecimento>
+    <Nome>Hotel teste</Nome>
+    <Abreviatura>teste</Abreviatura>
+    <Morada>Rua da Alegria, 172</Morada>
+    <Localidade>Portalegre</Localidade>
+    <Codigo_Postal>1000</Codigo_Postal>
+    <Zona_Postal>234</Zona_Postal>
+    <Telefone>214017744</Telefone>
+    <Fax>214017766</Fax>
+    <Nome_Contacto>Nuno teste</Nome_Contacto>
+    <Email_Contacto>teste.teste@sef.pt</Email_Contacto>
+  </Unidade_Hoteleira>
+=end
     def build_hotel_unit
       hotel_unit = {
-        'Unidade_Hoteleira' => @current_options[:hotel_unit],
+        'Codigo_Unidade_Hoteleira' => @current_options[:hotel_unit],
         'Estabelecimento' => @current_options[:establishment],
+        'Nome' => 'Hotel teste',
+        'Abreviatura' => 'teste',
+        'Morada' => 'Rua da Alegria, 172',
+        'Localidade' => 'Portalegre',
+        'Codigo_Postal' => '1000',
+        'Zona_Postal' => '234',
+        'Telefone' => '214017744',
+        'Fax' => '214017766',
+        'Nome_Contacto' => 'Nuno teste',
+        'Email_Contacto' => 'teste.teste@sef.pt',
       }
       hotel_unit
+    end
+
+=begin
+    <Numero_Ficheiro>97</Numero_Ficheiro>
+    <Data_Movimento>2008-05-20T00:00:00</Data_Movimento>
+=end
+    def build_control_data(file_number)
+      control_data = {
+        'Numero_Ficheiro' => file_number,
+        'Data_Movimento' => DateTime.now.strftime('%FT%T'),
+      }
+      control_data
     end
 
     def build_bulletins(bulletins = [])
@@ -94,9 +129,9 @@ module SIBAApi
         id_document: 'Documento_Identificacao',
         document_country: 'Pais_Emissor_Documento',
         document_type: 'Tipo_Documento',
-        origin_country: 'Pais_Residencia_Origem',
         start_date: 'Data_Entrada',
         end_date: 'Data_Saida',
+        origin_country: 'Pais_Residencia_Origem',
         origin_place: 'Local_Residencia_Origem',
       }
       translated_bulletins = []

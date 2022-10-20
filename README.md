@@ -30,7 +30,10 @@ TODO: Write usage instructions here
 
 ```ruby
 siba = SIBAApi.new(wsdl: 'https://siba.sef.pt/bawsdev/boletinsalojamento.asmx?wsdl', hotel_unit: '121212121', establishment: '00', access_key: '999999999')
-r = siba.deliver_bulletins([{ surname: 'Surname', name: 'Name', nationality: 'VEN', birthdate: '19990101', place_of_birth: 'Place of Birth', id_document: '123456789', document_country: 'YEM', document_type: 'P', origin_country: 'ZMB', start_date: '20220801', end_date: '20220831', origin_place: 'Place of Residence', }], cache_ttl: 0)
+r = siba.deliver_bulletins(123, [{ surname: 'Surname', name: 'Name', nationality: 'VEN', birthdate: '199
+9-01-01T00:00:00', place_of_birth: 'Place of Birth', id_document: '123456789', document_country: 'YEM', document_type: 'P
+', origin_country: 'USA', start_date: '2022-08-01T00:00:00', end_date: '2022-08-31T00:00:00', origin_place: 'Place of Res
+idence', }])
 ```
 
 ## Development
