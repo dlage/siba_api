@@ -12,7 +12,7 @@ module SIBAApi
     include Constants
     include HttpStatusCodes
 
-    attr_reader(*SIBAApi.configuration.property_names, :wsdl, :hotel_unit, :access_key, :establishment)
+    attr_reader(*SIBAApi.configuration.property_names)
 
     attr_accessor :current_options, :last_response
 
@@ -46,7 +46,6 @@ module SIBAApi
       SIBAApi.configuration.property_names.each do |key|
         send("#{key}=", opts[key])
       end
-      @wsdl = opts[:wsdl] || ENV['SIBA_API_WSDL'] || API_WSDL
 
       yield_or_eval(&block) if block_given?
     end
@@ -83,9 +82,8 @@ module SIBAApi
 
       if response_successful?(response)
         result = response.body["#{operation}_response".to_sym]["#{operation}_result".to_sym]
-        if result == '0'
-          return true
-        end
+        return response if result == '0'
+
         parsed_response = parse_response(result)
         raise error_class(response.http.code), "Code: #{parsed_response[:codigo_retorno]}, response: #{response.body}, description: #{parsed_response[:descricao]}"
       end
@@ -93,27 +91,24 @@ module SIBAApi
       raise error_class(response.http.code), "Code: #{response.http.code}, response: #{response.body}"
     end
 
-=begin
-Error:
-{:erros_ba=>
-  {:retorno_ba=>
-    {:linha=>"0",
-     :codigo_retorno=>"75",
-     :descricao=>
-      "Linha XML 6. -->The element 'Unidade_Hoteleira' in namespace 'http://sef.pt/BAws' has incomplete content. List of possible elements expected: 'Abreviatura' in namespace 'http://sef.pt/BAws'."},
-   :@xmlns=>"http://www.sef.pt/BAws"}}
-
-Success:
-
-=end
+    # Error:
+    # {:erros_ba=>
+    #   {:retorno_ba=>
+    #     {:linha=>"0",
+    #      :codigo_retorno=>"75",
+    #      :descricao=>
+    #       "Linha XML 6. -->The element 'Unidade_Hoteleira' in namespace 'http://sef.pt/BAws' has incomplete content. List of possible elements expected: 'Abreviatura' in namespace 'http://sef.pt/BAws'."},
+    #    :@xmlns=>"http://www.sef.pt/BAws"}}
+    #
+    # Success:
+    #
     def parse_response(result)
-      inner_response = Nori.new(:convert_tags_to => lambda { |tag| tag.snakecase.to_sym }).parse(
+      inner_response = Nori.new(convert_tags_to: ->(tag) { tag.snakecase.to_sym }).parse(
         result
       )
-      if inner_response[:erros_ba]
-        return inner_response[:erros_ba][:retorno_ba]
-      end
-      return inner_response
+      return inner_response[:erros_ba][:retorno_ba] if inner_response[:erros_ba]
+
+      inner_response
     end
 
     def error_class(error_code)

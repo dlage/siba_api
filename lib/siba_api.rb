@@ -3,8 +3,8 @@
 require 'savon'
 require_relative 'siba_api/version'
 
+# Base module for SIBA API Wrapper
 module SIBAApi
-  # Base module for Fantasticstay API
   class Error < StandardError; end
 
   LIBNAME = 'siba_api'

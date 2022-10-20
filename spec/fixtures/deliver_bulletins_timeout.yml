@@ -1,0 +1,85 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://siba.sef.pt/bawsdev/boletinsalojamento.asmx?wsdl
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - private, max-age=0
+      Content-Type:
+      - text/xml; charset=utf-8
+      Vary:
+      - Accept-Encoding
+      Server:
+      - ''
+      X-Aspnet-Version:
+      - ''
+      X-Frame-Options:
+      - SAMEORIGIN
+      Date:
+      - Thu, 20 Oct 2022 19:49:44 GMT
+      Content-Length:
+      - '1013'
+      Strict-Transport-Security:
+      - max-age=16000000; includeSubDomains; preload;
+    body:
+      encoding: ASCII-8BIT
+      string: "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<wsdl:definitions xmlns:tm=\"http://microsoft.com/wsdl/mime/textMatching/\"
+        xmlns:soapenc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:mime=\"http://schemas.xmlsoap.org/wsdl/mime/\"
+        xmlns:tns=\"http://sef.pt/\" xmlns:soap=\"http://schemas.xmlsoap.org/wsdl/soap/\"
+        xmlns:s=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://schemas.xmlsoap.org/wsdl/soap12/\"
+        xmlns:http=\"http://schemas.xmlsoap.org/wsdl/http/\" targetNamespace=\"http://sef.pt/\"
+        xmlns:wsdl=\"http://schemas.xmlsoap.org/wsdl/\">\r\n  <wsdl:types>\r\n    <s:schema
+        elementFormDefault=\"qualified\" targetNamespace=\"http://sef.pt/\">\r\n      <s:element
+        name=\"EntregaBoletinsAlojamento\">\r\n        <s:complexType>\r\n          <s:sequence>\r\n
+        \           <s:element minOccurs=\"0\" maxOccurs=\"1\" name=\"UnidadeHoteleira\"
+        type=\"s:string\" />\r\n            <s:element minOccurs=\"1\" maxOccurs=\"1\"
+        name=\"Estabelecimento\" type=\"s:int\" />\r\n            <s:element minOccurs=\"0\"
+        maxOccurs=\"1\" name=\"ChaveAcesso\" type=\"s:string\" />\r\n            <s:element
+        minOccurs=\"0\" maxOccurs=\"1\" name=\"Boletins\" type=\"s:string\" />\r\n
+        \         </s:sequence>\r\n        </s:complexType>\r\n      </s:element>\r\n
+        \     <s:element name=\"EntregaBoletinsAlojamentoResponse\">\r\n        <s:complexType>\r\n
+        \         <s:sequence>\r\n            <s:element minOccurs=\"0\" maxOccurs=\"1\"
+        name=\"EntregaBoletinsAlojamentoResult\" type=\"s:string\" />\r\n          </s:sequence>\r\n
+        \       </s:complexType>\r\n      </s:element>\r\n    </s:schema>\r\n  </wsdl:types>\r\n
+        \ <wsdl:message name=\"EntregaBoletinsAlojamentoSoapIn\">\r\n    <wsdl:part
+        name=\"parameters\" element=\"tns:EntregaBoletinsAlojamento\" />\r\n  </wsdl:message>\r\n
+        \ <wsdl:message name=\"EntregaBoletinsAlojamentoSoapOut\">\r\n    <wsdl:part
+        name=\"parameters\" element=\"tns:EntregaBoletinsAlojamentoResponse\" />\r\n
+        \ </wsdl:message>\r\n  <wsdl:portType name=\"BoletinsAlojamentoSoap\">\r\n
+        \   <wsdl:operation name=\"EntregaBoletinsAlojamento\">\r\n      <wsdl:input
+        message=\"tns:EntregaBoletinsAlojamentoSoapIn\" />\r\n      <wsdl:output message=\"tns:EntregaBoletinsAlojamentoSoapOut\"
+        />\r\n    </wsdl:operation>\r\n  </wsdl:portType>\r\n  <wsdl:binding name=\"BoletinsAlojamentoSoap\"
+        type=\"tns:BoletinsAlojamentoSoap\">\r\n    <soap:binding transport=\"http://schemas.xmlsoap.org/soap/http\"
+        />\r\n    <wsdl:operation name=\"EntregaBoletinsAlojamento\">\r\n      <soap:operation
+        soapAction=\"http://sef.pt/EntregaBoletinsAlojamento\" style=\"document\"
+        />\r\n      <wsdl:input>\r\n        <soap:body use=\"literal\" />\r\n      </wsdl:input>\r\n
+        \     <wsdl:output>\r\n        <soap:body use=\"literal\" />\r\n      </wsdl:output>\r\n
+        \   </wsdl:operation>\r\n  </wsdl:binding>\r\n  <wsdl:binding name=\"BoletinsAlojamentoSoap12\"
+        type=\"tns:BoletinsAlojamentoSoap\">\r\n    <soap12:binding transport=\"http://schemas.xmlsoap.org/soap/http\"
+        />\r\n    <wsdl:operation name=\"EntregaBoletinsAlojamento\">\r\n      <soap12:operation
+        soapAction=\"http://sef.pt/EntregaBoletinsAlojamento\" style=\"document\"
+        />\r\n      <wsdl:input>\r\n        <soap12:body use=\"literal\" />\r\n      </wsdl:input>\r\n
+        \     <wsdl:output>\r\n        <soap12:body use=\"literal\" />\r\n      </wsdl:output>\r\n
+        \   </wsdl:operation>\r\n  </wsdl:binding>\r\n  <wsdl:service name=\"BoletinsAlojamento\">\r\n
+        \   <wsdl:port name=\"BoletinsAlojamentoSoap\" binding=\"tns:BoletinsAlojamentoSoap\">\r\n
+        \     <soap:address location=\"https://siba.sef.pt/bawsdev/boletinsalojamento.asmx\"
+        />\r\n    </wsdl:port>\r\n    <wsdl:port name=\"BoletinsAlojamentoSoap12\"
+        binding=\"tns:BoletinsAlojamentoSoap12\">\r\n      <soap12:address location=\"https://siba.sef.pt/bawsdev/boletinsalojamento.asmx\"
+        />\r\n    </wsdl:port>\r\n  </wsdl:service>\r\n</wsdl:definitions>"
+  recorded_at: Thu, 20 Oct 2022 19:49:44 GMT
+recorded_with: VCR 6.0.0
