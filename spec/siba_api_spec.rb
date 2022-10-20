@@ -38,24 +38,40 @@ RSpec.describe SIBAApi do
       expect(api_client.access_key).to equal(access_key)
     end
 
+    person = {
+      surname: 'Surname', name: 'Name', nationality: 'VEN', birthdate: '1999-01-01T00:00:00',
+      place_of_birth: 'Place of Birth', id_document: '123456789', document_country: 'YEM',
+      document_type: 'P', origin_country: 'USA', start_date: '2022-08-01T00:00:00',
+      end_date: '2022-08-31T00:00:00', origin_place: 'Place of Residence'
+    }
+
     let(:response) do
       VCR.use_cassette('deliver_bulletins_success') do
         api_client.deliver_bulletins(
           123,
-          [
-            { surname: 'Surname', name: 'Name', nationality: 'VEN', birthdate: '1999-01-01T00:00:00',
-              place_of_birth: 'Place of Birth', id_document: '123456789', document_country: 'YEM',
-              document_type: 'P', origin_country: 'USA', start_date: '2022-08-01T00:00:00',
-              end_date: '2022-08-31T00:00:00', origin_place: 'Place of Residence'
-            }
-          ]
+          [ person ]
         )
       end
     end
-    it 'calls implemented method for the api' do
+    it 'builds the request for one person entry correctly' do
       expect(response).to be_kind_of(Savon::Response)
       expect(response.successful?).to eq(true)
       expect(response.body).to be_kind_of(Hash)
     end
+
+    let(:response) do
+      VCR.use_cassette('deliver_bulletins_multiple_success') do
+        api_client.deliver_bulletins(
+          123,
+          [ person, person, person ]
+        )
+      end
+    end
+    it 'builds the request for multiple people correctly' do
+      expect(response).to be_kind_of(Savon::Response)
+      expect(response.successful?).to eq(true)
+      expect(response.body).to be_kind_of(Hash)
+    end
+
   end
 end
