@@ -49,7 +49,7 @@ RSpec.describe SIBAApi do
       VCR.use_cassette('deliver_bulletins_success') do
         api_client.deliver_bulletins(
           123,
-          [ person ]
+          [person]
         )
       end
     end
@@ -63,7 +63,7 @@ RSpec.describe SIBAApi do
       VCR.use_cassette('deliver_bulletins_multiple_success') do
         api_client.deliver_bulletins(
           123,
-          [ person, person, person ]
+          [person, person, person]
         )
       end
     end
@@ -72,6 +72,5 @@ RSpec.describe SIBAApi do
       expect(response.successful?).to eq(true)
       expect(response.body).to be_kind_of(Hash)
     end
-
   end
 end
