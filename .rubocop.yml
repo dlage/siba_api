@@ -12,3 +12,10 @@ Layout/LineLength:
 AllCops:
   TargetRubyVersion: 2.4.0
   NewCops: enable
+
+Metrics/BlockLength:
+  Exclude:
+    - 'Rakefile'
+    - '**/*.rake'
+    - 'test/**/*.rb'
+    - 'spec/**/*.rb'

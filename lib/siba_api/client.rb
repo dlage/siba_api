@@ -46,21 +46,7 @@ module SIBAApi
     #     'Data_Saida' => '20220831',
     #     'Local_Residencia_Origem' => 'Place of Residence',
     def deliver_bulletins(file_number, bulletins = [], _global_params = {})
-      logger = Logger.new $stderr
-      logger.level = Logger::DEBUG
-      bulletins_xml = Gyoku.xml(
-        {
-          'MovimentoBAL' => {
-            'Unidade_Hoteleira' => build_hotel_unit,
-            'Boletim_Alojamento' => build_bulletins(bulletins),
-            'Envio' => build_control_data(file_number),
-            :@xmlns => 'http://sef.pt/BAws'
-          }
-        },
-        pretty_print: true
-      )
-      logger.debug(bulletins_xml)
-      bulletins_encoded = Base64.encode64(bulletins_xml)
+      bulletins_encoded = build_encoded_bulletins_xml(file_number, bulletins)
       response = request(
         operation: :entrega_boletins_alojamento,
         params: {
@@ -71,6 +57,19 @@ module SIBAApi
     end
 
     protected
+
+    def build_encoded_bulletins_xml(file_number, bulletins)
+      bulletins_xml = Gyoku.xml(
+        {
+          'MovimentoBAL' => {
+            'Unidade_Hoteleira' => build_hotel_unit, 'Boletim_Alojamento' => build_bulletins(bulletins),
+            'Envio' => build_control_data(file_number), :@xmlns => 'http://sef.pt/BAws'
+          }
+        },
+        pretty_print: true
+      )
+      Base64.encode64(bulletins_xml)
+    end
 
     #   <Unidade_Hoteleira>
     #     <Codigo_Unidade_Hoteleira>121212121</Codigo_Unidade_Hoteleira>
@@ -100,20 +99,7 @@ module SIBAApi
     end
 
     def build_bulletins(bulletins = [])
-      translation_hash = {
-        surname: 'Apelido',
-        name: 'Nome',
-        nationality: 'Nacionalidade',
-        birthdate: 'Data_Nascimento',
-        place_of_birth: 'Local_Nascimento',
-        id_document: 'Documento_Identificacao',
-        document_country: 'Pais_Emissor_Documento',
-        document_type: 'Tipo_Documento',
-        start_date: 'Data_Entrada',
-        end_date: 'Data_Saida',
-        origin_country: 'Pais_Residencia_Origem',
-        origin_place: 'Local_Residencia_Origem'
-      }
+      translation_hash = bulletin_translation_hash
       translated_bulletins = []
       bulletins.each do |b|
         bt = {}
@@ -125,18 +111,25 @@ module SIBAApi
       translated_bulletins
     end
 
+    def bulletin_translation_hash
+      {
+        surname: 'Apelido', name: 'Nome', nationality: 'Nacionalidade',
+        birthdate: 'Data_Nascimento', place_of_birth: 'Local_Nascimento',
+        id_document: 'Documento_Identificacao', document_country: 'Pais_Emissor_Documento',
+        document_type: 'Tipo_Documento',
+        start_date: 'Data_Entrada', end_date: 'Data_Saida',
+        origin_country: 'Pais_Residencia_Origem', origin_place: 'Local_Residencia_Origem'
+      }
+    end
+
     def process_response(response)
       result = response
       case result
       when Hash
         result.transform_keys!(&:to_sym)
-        result.each_value do |r|
-          process_response(r)
-        end
+        result.each_value { |r| process_response(r) }
       when Array
-        result.each do |r|
-          process_response(r)
-        end
+        result.each { |r| process_response(r) }
       end
       result
     end

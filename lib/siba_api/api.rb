@@ -80,28 +80,18 @@ module SIBAApi
       response = client.call(operation.to_sym, message: default_params.merge(params))
       self.last_response = response
 
+      process_operation_response(operation, response)
+    end
+
+    def process_operation_response(operation, response)
       if response_successful?(response)
         result = response.body["#{operation}_response".to_sym]["#{operation}_result".to_sym]
         return response if result == '0'
-
-        parsed_response = parse_response(result)
-        raise error_class(response.http.code), "Code: #{parsed_response[:codigo_retorno]}, response: #{response.body}, description: #{parsed_response[:descricao]}"
       end
 
       raise error_class(response.http.code), "Code: #{response.http.code}, response: #{response.body}"
     end
 
-    # Error:
-    # {:erros_ba=>
-    #   {:retorno_ba=>
-    #     {:linha=>"0",
-    #      :codigo_retorno=>"75",
-    #      :descricao=>
-    #       "Linha XML 6. -->The element 'Unidade_Hoteleira' in namespace 'http://sef.pt/BAws' has incomplete content. List of possible elements expected: 'Abreviatura' in namespace 'http://sef.pt/BAws'."},
-    #    :@xmlns=>"http://www.sef.pt/BAws"}}
-    #
-    # Success:
-    #
     def parse_response(result)
       inner_response = Nori.new(convert_tags_to: ->(tag) { tag.snakecase.to_sym }).parse(
         result
@@ -130,7 +120,7 @@ module SIBAApi
       # :nodoc:
       case method_name.to_s
       when /^(.*)\?$/
-        !!send(Regexp.last_match(1).to_s)
+        !send(Regexp.last_match(1).to_s).nil?
       when /^clear_(.*)$/
         send("#{Regexp.last_match(1)}=", nil)
       else
