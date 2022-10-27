@@ -92,10 +92,7 @@ module SIBAApi
     #     <Numero_Ficheiro>97</Numero_Ficheiro>
     #     <Data_Movimento>2008-05-20T00:00:00</Data_Movimento>
     def build_control_data(file_number)
-      {
-        'Numero_Ficheiro' => file_number,
-        'Data_Movimento' => DateTime.now.strftime('%FT%T')
-      }
+      { 'Numero_Ficheiro' => file_number, 'Data_Movimento' => DateTime.now.strftime('%FT%T') }
     end
 
     def build_bulletins(bulletins = [])
