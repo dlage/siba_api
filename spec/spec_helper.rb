@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'dotenv/load'
 require 'siba_api'
 require 'webmock/rspec'
 require 'vcr_setup'

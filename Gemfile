@@ -5,8 +5,6 @@ source 'https://rubygems.org'
 # Specify your gem's dependencies in siba_api.gemspec
 gemspec
 
-gem 'dotenv', '~> 2.7'
-
 group :test do
   gem 'rake', '~> 13.0'
   gem 'rspec', '~> 3.0'
