@@ -58,5 +58,29 @@ module SIBAApi
     PARAM_START_PAGE = 'start_page'
 
     PARAM_INCLUDE_RELATED = 'include_related_objects'
+
+    # Default API config constants
+    API_WSDL = 'https://siba.sef.pt/bawsdev/boletinsalojamento.asmx?wsdl'
+
+    API_HOTEL_UNIT = '121212121'
+
+    API_HOTEL_UNIT_INFO = {
+      'Codigo_Unidade_Hoteleira' => '121212121',
+      'Estabelecimento' => '00',
+      'Nome' => 'Hotel teste',
+      'Abreviatura' => 'teste',
+      'Morada' => 'Rua da Alegria, 172',
+      'Localidade' => 'Portalegre',
+      'Codigo_Postal' => '1000',
+      'Zona_Postal' => '234',
+      'Telefone' => '214017744',
+      'Fax' => '214017766',
+      'Nome_Contacto' => 'Nuno teste',
+      'Email_Contacto' => 'teste.teste@sef.pt'
+    }.freeze
+
+    API_ACCESS_KEY = '999999999'
+
+    API_ESTABLISHMENT = '00'
   end
 end

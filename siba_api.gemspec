@@ -33,7 +33,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'gyoku', '~> 1.4.0'
   spec.add_dependency 'savon', '~> 2.13'
 
-  # spec.add_dependency 'dry-configurable', '~> 0.12.1'
+  spec.add_dependency 'dry-configurable', '~> 0.12'
 
   # For more information and examples about making a new gem, checkout our
   # guide at: https://bundler.io/guides/creating_gem.html

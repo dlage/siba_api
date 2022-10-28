@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require_relative 'api_exceptions'
-require_relative 'configuration'
 require_relative 'constants'
 require_relative 'http_status_codes'
+require 'dry-configurable'
 
 module SIBAApi
   # Core class responsible for api interface operations
@@ -11,22 +11,8 @@ module SIBAApi
     include ApiExceptions
     include Constants
     include HttpStatusCodes
+    include Dry::Configurable
 
-    attr_reader(*SIBAApi.configuration.property_names)
-
-    attr_accessor :current_options, :last_response
-
-    # Callback to update current configuration options
-    class_eval do
-      SIBAApi.configuration.property_names.each do |key|
-        define_method "#{key}=" do |arg|
-          instance_variable_set("@#{key}", arg)
-          current_options.merge!({ "#{key}": arg })
-        end
-      end
-    end
-
-    API_WSDL = 'https://siba.sef.pt/bawsdev/boletinsalojamento.asmx?wsdl'
     HTTP_STATUS_MAPPING = {
       HTTP_BAD_REQUEST_CODE => BadRequestError,
       HTTP_UNAUTHORIZED_CODE => UnauthorizedError,
@@ -36,15 +22,42 @@ module SIBAApi
       'default' => ApiError
     }.freeze
 
+    setting :follow_redirects, default: true
+
+    # The value sent in the http header for 'User-Agent' if none is set
+    setting :user_agent, default: "SIBAApi API Ruby Gem #{SIBAApi::VERSION}"
+
+    # By default uses the Faraday connection options if none is set
+    setting :connection_options, default: {}
+
+    # Add Faraday::RackBuilder to overwrite middleware
+    setting :stack
+
+    # WSDL to use for SIBA API
+    setting :wsdl, default: API_WSDL, reader: true
+
+    # Hotel unit
+    setting :hotel_unit, default: API_HOTEL_UNIT, reader: true
+
+    # API Key
+    setting :access_key, default: API_ACCESS_KEY, reader: true
+
+    # Establishment to use
+    setting :establishment, default: API_ESTABLISHMENT, reader: true
+
+    # Hotel Unit complete information
+    setting :hotel_unit_info, default: API_HOTEL_UNIT_INFO, reader: true
+
+    attr_accessor :last_response
+
     # Create new API
     #
     # @api public
     def initialize(options = {}, &block)
-      opts = SIBAApi.configuration.fetch.merge(options)
-      @current_options = opts
-
-      SIBAApi.configuration.property_names.each do |key|
-        send("#{key}=", opts[key])
+      configure do |c|
+        options.each_key do |key|
+          c.send("#{key}=", options[key])
+        end
       end
 
       yield_or_eval(&block) if block_given?
@@ -63,7 +76,7 @@ module SIBAApi
 
     def client
       @client ||= Savon.client do |globals|
-        globals.wsdl @wsdl
+        globals.wsdl config.wsdl
         globals.log true
         globals.log_level :debug
         globals.convert_request_keys_to :camelcase
@@ -72,9 +85,9 @@ module SIBAApi
 
     def request(operation:, params: {})
       default_params = {
-        UnidadeHoteleira: @current_options[:hotel_unit],
-        Estabelecimento: @current_options[:establishment],
-        ChaveAcesso: @current_options[:access_key]
+        UnidadeHoteleira: config.hotel_unit,
+        Estabelecimento: config.establishment,
+        ChaveAcesso: config.access_key
       }
 
       response = client.call(operation.to_sym, message: default_params.merge(params))
@@ -111,25 +124,6 @@ module SIBAApi
 
     def response_successful?(response)
       response.successful? and (response.http.code == HTTP_OK_CODE)
-    end
-
-    # Responds to attribute query or attribute clear
-    #
-    # @api private
-    def method_missing(method_name, *args, &block)
-      # :nodoc:
-      case method_name.to_s
-      when /^(.*)\?$/
-        !send(Regexp.last_match(1).to_s).nil?
-      when /^clear_(.*)$/
-        send("#{Regexp.last_match(1)}=", nil)
-      else
-        super
-      end
-    end
-
-    def respond_to_missing?(method_name, include_private = false)
-      method_name.to_s.start_with?('clear_') || super
     end
   end
 end

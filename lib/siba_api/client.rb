@@ -86,7 +86,7 @@ module SIBAApi
     #     <Email_Contacto>teste.teste@sef.pt</Email_Contacto>
     #   </Unidade_Hoteleira>
     def build_hotel_unit
-      @hotel_unit_info
+      config.hotel_unit_info
     end
 
     #     <Numero_Ficheiro>97</Numero_Ficheiro>
