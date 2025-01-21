@@ -60,7 +60,7 @@ module SIBAApi
     PARAM_INCLUDE_RELATED = 'include_related_objects'
 
     # Default API config constants
-    API_WSDL = 'https://siba.sef.pt/bawsdev/boletinsalojamento.asmx?wsdl'
+    API_WSDL = 'https://siba.ssi.gov.pt/bawsdev/boletinsalojamento.asmx?wsdl'
 
     API_HOTEL_UNIT = '121212121'
 

@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: https://siba.sef.pt/bawsdev/boletinsalojamento.asmx?wsdl
+    uri: https://siba.ssi.gov.pt/bawsdev/boletinsalojamento.asmx?wsdl
     body:
       encoding: US-ASCII
       string: ''

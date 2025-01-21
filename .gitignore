@@ -16,3 +16,5 @@ fantasticstay_api.iml
 
 # custom ignores
 .env
+*.gem
+.irb_history

@@ -8,7 +8,7 @@ RSpec.describe SIBAApi do
   end
 
   describe 'SIBAApi::Client' do
-    wsdl = 'https://siba.sef.pt/bawsdev/boletinsalojamento.asmx?wsdl'
+    wsdl = 'https://siba.ssi.gov.pt/bawsdev/boletinsalojamento.asmx?wsdl'
     hotel_unit = '121212121'
     establishment = '00'
     access_key = '999999999'
