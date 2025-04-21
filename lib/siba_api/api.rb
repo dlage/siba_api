@@ -80,6 +80,7 @@ module SIBAApi
         globals.log true
         globals.log_level :debug
         globals.convert_request_keys_to :camelcase
+        globals.follow_redirects true
         # globals.ssl_verify_mode :none # NOTE: As of 2024.07.15 ssl validation is failing
         # TEST: openssl s_client -showcerts -verify 5 -connect siba.sef.pt:443 < /dev/null
       end
